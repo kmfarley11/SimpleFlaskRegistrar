@@ -11,25 +11,27 @@
 #######################################################################################
 
 from collections import Counter
-from flask import Flask, request, g, render_template, flash, redirect, url_for, session
-import sqlite3
 import bcrypt
+from flask import Flask, request, g, render_template, flash, redirect, url_for, session
+import os
+import sqlite3
 #from flask_login import LoginManager
 
 app = Flask(__name__)
 
 # TODO: move config to separate file...
-APP_PATH = '/home/ubuntu/flaskapp'
-DATABASE = APP_PATH + '/flaskapp.db'
-SALT_PATH = APP_PATH + '/salt.txt'
-SALT = ''
-with open(SALT_PATH, 'r') as sp:
-    SALT = sp.read()
-SECRET_KEY = 'super secret key'
-DEBUG = True
-SESSION_TYPE = 'filesystem'
+if __name__ != '__main__':
+    APP_PATH = os.path.abspath(os.path.dirname(__file__)) #'/home/ubuntu/flaskapp'
+    DATABASE = APP_PATH + '/flaskapp.db'
+    SALT_PATH = APP_PATH + '/salt.txt'
+    SALT = ''
+    with open(SALT_PATH, 'r') as sp:
+        SALT = sp.read()
+    SECRET_KEY = 'super secret key'
+    DEBUG = True
+    SESSION_TYPE = 'filesystem'
+    app.config.from_object(__name__)
 
-app.config.from_object(__name__)
 
 # TODO: use login manager... (need to fix mod_wsgi/venv for that though...)
 #login_manager = LoginManager()
@@ -57,12 +59,15 @@ def index():
     uname = ''
     try:
         if request.method == 'POST':
-            # TODO: input sanitization...
+            # TODO: (more) input sanitization...
             uname = request.form['username']
-            session['username'] = str(uname)
             passw = request.form['password']
-            usrget = execute_query('SELECT password FROM flaskapp WHERE username=?', (uname,))
+            if not uname or not passw:
+                raise Exception('Cannot provide an empty username or password!')
+
+            # usrget = execute_query('SELECT password FROM flaskapp WHERE username=?', (uname,))
             hashed = bcrypt.hashpw(str(passw), app.config['SALT'])
+            session['username'] = str(uname)
             session['hashed'] = str(hashed)
             if authenticate():
                 return redirect(url_for('viewdb'))
@@ -94,7 +99,7 @@ def register():
             sqlcmd = 'INSERT INTO flaskapp VALUES (?,?,?,?,?)'
             sqlargs = (session['username'], session['hashed'], fname, lname, email)
             conn = get_db()
-            cur = conn.execute(sqlcmd, sqlargs)
+            _ = conn.execute(sqlcmd, sqlargs)
             conn.commit()
 
             return redirect(url_for('viewdb'))
@@ -149,9 +154,16 @@ def execute_query(query, args=()):
 
 
 if __name__ == '__main__':
-    # NOTE: this wont really get hit since its being used with mod_wsgi...
+    # NOTE: this wont get hit if being used with mod_wsgi
+    app.config['APP_PATH'] = os.path.abspath(os.path.dirname(__file__))
+    app.config['DATABASE'] = app.config['APP_PATH'] + '/flaskapp.db'
+    app.config['SALT_PATH'] = app.config['APP_PATH'] + '/salt.txt'
+    app.config['SALT'] = ''
+    with open(app.config['SALT_PATH'], 'r') as sp:
+        app.config['SALT'] = sp.read()
+
     app.secret_key = 'super secret key'
     app.config['SESSION_TYPE'] = 'filesystem'
-    session.init_app(app)
+    #session.init_app(app)
     app.debug = True
     app.run()
