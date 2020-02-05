@@ -1,0 +1,39 @@
+<!------------------------------------------------------------------------------>
+<!--templates/register.html: the page to finish filling out new user info     -->
+<!------------------------------------------------------------------------------>
+
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+
+    <title>Registration page</title>
+    <meta name="description" content="Registration page">
+
+</head>
+
+
+<body>
+    <!--<script src="js/scripts.js"></script>-->
+    <p>
+        No such user detected. Finish this form to create a new user!
+    </p>
+
+{% if error %}
+      <p class="help-block" style="color:red"><strong>Error: {{ error }}</strong></p>
+{% endif %}
+
+    <form action="/register" method="post">
+        <br>
+        First Name: <input type="text" name="firstname" value="{{request.form.firstname}}"></input>
+        <br>
+        Last Name: <input type="text" name="lastname" value="{{request.form.lastname}}"></input>
+        <br>
+        Email: <input type="text" name="email" value="{{request.form.email}}"></input>
+        <br>
+        <input type="submit" value="Register"></input>
+    </form>
+
+</body>
+</html>
