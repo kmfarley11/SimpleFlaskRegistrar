@@ -1,0 +1,28 @@
+body {
+    text-align: center;
+    align-content: center;
+}
+
+/* .form-context1 {
+   text-align: center; 
+} */
+
+.form-context2 {
+    font-style: italic; 
+}
+
+.error-block {
+    color: red;
+    font-weight: bold;
+}
+
+.txt-input-lbl {
+    color: gray;
+}
+
+.form-login-container {
+    border-width: 1px;
+    border-style: solid;
+    margin-left: 35%;
+    margin-right: 35%;
+}

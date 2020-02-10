@@ -6,8 +6,11 @@
 #       '/register' : if a new username was entered from '/', prompts for more info
 #       '/viewdb'   : post register/signin with a stored username displays user info
 #
-#   Note: the html has not been cleaned much and inputs need sanitization
-#       but it does effectively allow new users to register and displays stored users if authenticated
+#   Note: the sign in and register pages are the main '/' page. I did not see a need
+#       to separate the two: 
+#           if an existing user with a valid password, show data
+#           if an existing user with an invalid password, show error
+#           if new user, redirect to final registration input
 #######################################################################################
 
 from collections import Counter
@@ -53,15 +56,23 @@ def authenticate():
     return False
 
 
+# generic input sanitization
+def sanitize(to_check):
+    invalid_chars = '\'"\\' # ' " \
+    char_limit = 50
+    if any([c in invalid_chars for c in to_check]) or len(to_check) > char_limit:
+        raise Exception('Invalid input detected! Omit quote and escape characters. Also use less than %d chars.' % (char_limit))
+    return to_check.strip()
+
+
 @app.route('/', methods=["GET","POST"])
 def index():
-    error = ''
-    uname = ''
+    error, uname = '', ''
     try:
         if request.method == 'POST':
             # TODO: (more) input sanitization...
-            uname = request.form['username']
-            passw = request.form['password']
+            uname = sanitize(request.form['username'])
+            passw = sanitize(request.form['password'])
             if not uname or not passw:
                 raise Exception('Cannot provide an empty username or password!')
 
@@ -91,10 +102,9 @@ def register():
             raise Exception('User "%s" already exists! cannot re-register!' % (uname))
 
         if request.method == 'POST':
-            # TODO: input sanitization...
-            fname = request.form['firstname']
-            lname = request.form['lastname']
-            email = request.form['email']
+            fname = sanitize(request.form['firstname'])
+            lname = sanitize(request.form['lastname'])
+            email = sanitize(request.form['email'])
 
             sqlcmd = 'INSERT INTO flaskapp VALUES (?,?,?,?,?)'
             sqlargs = (session['username'], session['hashed'], fname, lname, email)

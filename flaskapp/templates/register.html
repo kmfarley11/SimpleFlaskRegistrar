@@ -7,33 +7,40 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-
     <title>Registration page</title>
     <meta name="description" content="Registration page">
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
-
 
 <body>
     <!--<script src="js/scripts.js"></script>-->
-    <p>
-        No such user detected. Finish this form to create a new user!
-    </p>
+    <p class='form-context1'>No such user detected. Finish this form to create a new user!</p>
 
 {% if error %}
-      <p class="help-block" style="color:red"><strong>Error: {{ error }}</strong></p>
+    <p class="error-block">Error: {{ error }}</p>
 {% endif %}
 
-    <form action="/register" method="post">
-        <br>
-        First Name: <input type="text" name="firstname" value="{{request.form.firstname}}"></input>
-        <br>
-        Last Name: <input type="text" name="lastname" value="{{request.form.lastname}}"></input>
-        <br>
-        Email: <input type="text" name="email" value="{{request.form.email}}"></input>
-        <br>
-        <input type="submit" value="Register"></input>
-    </form>
-
+    <div class='form-login-container'>
+        <form action="/register" method="post">
+            <br>
+            <span>
+                <span class='txt-input-lbl'>First Name: </span>
+                <input type="text" name="firstname" value="{{request.form.firstname}}"></input>
+            </span>
+            <br>
+            <span>
+                <span class='txt-input-lbl'>Last Name: </span>
+                <input type="text" name="lastname" value="{{request.form.lastname}}"></input>
+            </span>
+            <br>
+            <span>
+                <span class='txt-input-lbl'>Email: </span>
+                <input type="text" name="email" value="{{request.form.email}}"></input>
+            </span>
+            <br><br>
+            <input type="submit" value="Register"></input>
+            <br><br>
+        </form>
+    </div>
 </body>
 </html>

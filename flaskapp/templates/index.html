@@ -8,34 +8,38 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-
     <title>Index page</title>
     <meta name="description" content="Index page">
-
-    <!--<link rel="stylesheet" href="css/styles.css?v=1.0">-->
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
 </head>
 
 
 <body>
     <!--<script src="js/scripts.js"></script>-->
-    <p>
-        Register or sign up by entering a username and password
-        (if the user specified is found, will look up and display their information)
-    </p>
+    <p class='form-context1'>Register or sign up by entering a username and password.</p>
+    <p class='form-context2'>(if the user specified is found, will look up and display their information)</p>    
 
 {% if error %}
-      <p class="help-block" style="color:red"><strong>Error: {{ error }}</strong></p>
+    <p class="error-block">Error: {{ error }}</p>
 {% endif %}
 
-    <form action="/" method="post">
-        <br>
-        Username: <input type="text" name="username" value="{{request.form.username}}"></input>
-        <br>
-        Password: <input type="password" name="password" value="{{request.form.password}}"></input>
-        <br>
-        <input type="submit" value="Sign In (or Sign up)"></input>
-    </form>
+    <div class='form-login-container'>
+        <form action="/" method="post">
+            <br>
+            <span>
+                <span class='txt-input-lbl'>Username: </span>
+                <input class='txt-input' type="text" name="username" value="{{request.form.username}}"></input>
+            </span>
+            <br>
+            <span>
+                <span class='txt-input-lbl'>Password: </span>
+                <input class='txt-input' type="password" name="password" value="{{request.form.password}}"></input>
+            </span>
+            <br><br>
+            <input type="submit" value="Sign In (or Sign up)"></input>
+            <br><br>
+        </form>
+    </div>
 
 </body>
 </html>
