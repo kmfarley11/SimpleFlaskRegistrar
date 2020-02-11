@@ -10,11 +10,13 @@
     <title>Registration page</title>
     <meta name="description" content="Registration page">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <!--generated via https://www.favicon.cc/-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 
 <body>
     <!--<script src="js/scripts.js"></script>-->
-    <p class='form-context1'>No such user detected. Finish this form to create a new user!</p>
+    <p class='form-context1'>User "{{session['username']}}" not found. Finish this form to create a new user!</p>
 
 {% if error %}
     <p class="error-block">Error: {{ error }}</p>
@@ -23,22 +25,25 @@
     <div class='form-login-container'>
         <form action="/register" method="post">
             <br>
-            <span>
+            <div>
                 <span class='txt-input-lbl'>First Name: </span>
-                <input type="text" name="firstname" value="{{request.form.firstname}}"></input>
-            </span>
+                <br>
+                <input class='txt-input' type="text" name="firstname" value="{{request.form.firstname}}"></input>
+            </div>
             <br>
-            <span>
+            <div>
                 <span class='txt-input-lbl'>Last Name: </span>
-                <input type="text" name="lastname" value="{{request.form.lastname}}"></input>
-            </span>
+                <br>
+                <input class='txt-input' type="text" name="lastname" value="{{request.form.lastname}}"></input>
+            </div>
             <br>
-            <span>
+            <div>
                 <span class='txt-input-lbl'>Email: </span>
-                <input type="text" name="email" value="{{request.form.email}}"></input>
-            </span>
+                <br>
+                <input class='txt-input' type="text" name="email" value="{{request.form.email}}"></input>
+            </div>
             <br><br>
-            <input type="submit" value="Register"></input>
+            <input class='submit-btn' type="submit" value="Register"></input>
             <br><br>
         </form>
     </div>

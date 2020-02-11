@@ -11,6 +11,8 @@
     <title>Index page</title>
     <meta name="description" content="Index page">
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <!--generated via https://www.favicon.cc/-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
 </head>
 
 
@@ -26,17 +28,17 @@
     <div class='form-login-container'>
         <form action="/" method="post">
             <br>
-            <span>
+            <div>
                 <span class='txt-input-lbl'>Username: </span>
                 <input class='txt-input' type="text" name="username" value="{{request.form.username}}"></input>
-            </span>
+            </div>
             <br>
-            <span>
+            <div>
                 <span class='txt-input-lbl'>Password: </span>
                 <input class='txt-input' type="password" name="password" value="{{request.form.password}}"></input>
-            </span>
-            <br><br>
-            <input type="submit" value="Sign In (or Sign up)"></input>
+            </div>
+            <br>
+            <input class='submit-btn' type="submit" value="Sign In (or Sign up)"></input>
             <br><br>
         </form>
     </div>

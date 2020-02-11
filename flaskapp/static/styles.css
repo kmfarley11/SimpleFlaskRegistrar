@@ -1,6 +1,7 @@
 body {
     text-align: center;
     align-content: center;
+    font-family: arial, monospace;
 }
 
 /* .form-context1 {
@@ -12,17 +13,66 @@ body {
 }
 
 .error-block {
-    color: red;
+    color: #FF0101;
     font-weight: bold;
 }
 
 .txt-input-lbl {
-    color: gray;
+    color: #555555;
+    font-family: arial, monospace;
+    /* font-size: 14px; */
+}
+
+/* .txt-input {
+    margin-left: 5%; 
+    margin-right: 0%;
+} */
+
+input.submit-btn {
+    background-color: #555555;
+    border: none;
+    border-radius: 4px;
+    color: white;
+    padding: 6px 16px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 16px;
+    margin: 4px 2px;
+    cursor: pointer;
+    transition-duration: 0.1s;
+    border: 1px solid #555555;
+}
+
+input.submit-btn:hover {
+    color: black;
+    background-color: white;
 }
 
 .form-login-container {
-    border-width: 1px;
-    border-style: solid;
-    margin-left: 35%;
-    margin-right: 35%;
+    border: 1px solid #555555;
+    margin-left: 30%;
+    margin-right: 30%;
+}
+
+
+/* (mostly) from w3 schools demo:
+ *  https://www.w3schools.com/html/tryit.asp?filename=tryhtml_table_intro 
+ */
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    margin-left: 25%;
+    margin-right: 25%;
+    width: 50%;
+}
+  
+td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
+
+tr:nth-child(even) {
+    background-color: #dddddd;
 }

@@ -1,0 +1,34 @@
+<!------------------------------------------------------------------------------>
+<!--templates/viewdb.html: the grid view for when a user is authenticated     -->
+<!-- (TODO: use flask templates more appropriately)                           -->
+<!------------------------------------------------------------------------------>
+
+<!doctype html>
+
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Viewdb page</title>
+    <meta name="description" content="Viewdb page">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}" />
+    <!--generated via https://www.favicon.cc/-->
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+</head>
+
+
+<body>
+    <!--<script src="js/scripts.js"></script>-->
+    <p class='form-context1'>User details here (only if authenticated)</p>
+    <!-- <p class='form-context2'>(if the user specified is found, will look up and display their information)</p>     -->
+
+{% if error %}
+    <p class="error-block">Error: {{ error }}</p>
+{% endif %}
+
+    <!-- get data table from flask (probably cleaner to construct table here... -->
+    {% autoescape off %}
+    {{ py_html }}
+    {% endautoescape %}
+
+</body>
+</html>

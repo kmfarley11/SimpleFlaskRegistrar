@@ -25,8 +25,8 @@ app = Flask(__name__)
 # TODO: move config to separate file...
 if __name__ != '__main__':
     APP_PATH = os.path.abspath(os.path.dirname(__file__)) #'/home/ubuntu/flaskapp'
-    DATABASE = APP_PATH + '/flaskapp.db'
-    SALT_PATH = APP_PATH + '/salt.txt'
+    DATABASE = os.path.join(APP_PATH, 'flaskapp.db')
+    SALT_PATH = os.path.join(APP_PATH, 'salt.txt')
     SALT = ''
     with open(SALT_PATH, 'r') as sp:
         SALT = sp.read()
@@ -62,6 +62,8 @@ def sanitize(to_check):
     char_limit = 50
     if any([c in invalid_chars for c in to_check]) or len(to_check) > char_limit:
         raise Exception('Invalid input detected! Omit quote and escape characters. Also use less than %d chars.' % (char_limit))
+    if not to_check.strip():
+        raise Exception('Empty inputs are not allowed!')
     return to_check.strip()
 
 
@@ -70,16 +72,13 @@ def index():
     error, uname = '', ''
     try:
         if request.method == 'POST':
-            # TODO: (more) input sanitization...
+            # sanitize inputs, hash password, store session data (user,hash)
             uname = sanitize(request.form['username'])
             passw = sanitize(request.form['password'])
-            if not uname or not passw:
-                raise Exception('Cannot provide an empty username or password!')
-
-            # usrget = execute_query('SELECT password FROM flaskapp WHERE username=?', (uname,))
             hashed = bcrypt.hashpw(str(passw), app.config['SALT'])
             session['username'] = str(uname)
             session['hashed'] = str(hashed)
+            # authenticate uses session data
             if authenticate():
                 return redirect(url_for('viewdb'))
             else:
@@ -91,11 +90,11 @@ def index():
 
 @app.route('/register', methods=["GET", "POST"])
 def register():
-    # TODO: format table (use html/css...)
-    if not session['username'] or not session['hashed']:
-        return '<h4>ERROR: username/hash not provided!?</h4>'
     error = ''
     try:
+        if not session['username'] or not session['hashed']:
+            raise Exception('username/hash not provided, cannot submit...!?')
+
         uname = session['username']
         usrget = execute_query('SELECT username FROM flaskapp WHERE username=?', (uname,))
         if usrget:
@@ -120,19 +119,20 @@ def register():
 
 @app.route('/viewdb')
 def viewdb():
-    # TODO: format table (use html/css...)
-    error = ''
+    error, py_html = '', ''
     try:
         if authenticate():
+            # Note: html construction here is a little hacky
             columns = 'firstname,lastname,email'
             rows = execute_query('SELECT %s FROM flaskapp WHERE username=?' % (columns), (session['username'],))
-            rows = [columns.split(',')] + rows
-            return '<br>'.join(str(row) for row in rows)
+            html_columns = '<tr>' + ''.join(['<th>'+r+'</th>' for r in columns.split(',')]) + '</tr>' 
+            html_rows = ''.join(['<tr>' + ''.join(['<td>'+r+'</td>' for r in row]) + '</tr>' for row in rows])
+            py_html = '<table>' + html_columns + html_rows + '</table>'
         else:
-            error = 'ERROR: user not found!'
+            error = 'user "%s" not found!' % (session['username'])
     except Exception as e:
         error = e
-    return '<h4>' + str(error) + '</h4>'
+    return render_template('viewdb.html', py_html = py_html, error = error)
 
 
 
@@ -166,8 +166,8 @@ def execute_query(query, args=()):
 if __name__ == '__main__':
     # NOTE: this wont get hit if being used with mod_wsgi
     app.config['APP_PATH'] = os.path.abspath(os.path.dirname(__file__))
-    app.config['DATABASE'] = app.config['APP_PATH'] + '/flaskapp.db'
-    app.config['SALT_PATH'] = app.config['APP_PATH'] + '/salt.txt'
+    app.config['DATABASE'] = os.path.join(app.config['APP_PATH'], 'flaskapp.db')
+    app.config['SALT_PATH'] = os.path.join(app.config['APP_PATH'], 'salt.txt')
     app.config['SALT'] = ''
     with open(app.config['SALT_PATH'], 'r') as sp:
         app.config['SALT'] = sp.read()
